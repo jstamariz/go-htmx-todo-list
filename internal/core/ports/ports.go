@@ -1,6 +1,6 @@
 package ports
 
-import "github.com/guilycst/go-htmx/internal/core/domain"
+import "github.com/jstamariz/go-htmx/internal/core/domain"
 
 type TodoRepository interface {
 	FindById(id any) (*domain.TodoItem, error)

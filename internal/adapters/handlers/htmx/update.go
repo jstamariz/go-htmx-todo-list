@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/guilycst/go-htmx/internal/core/services/todosrv"
+	"github.com/jstamariz/go-htmx/internal/core/services/todosrv"
 )
 
 func (hx *HTMXHandler) Update(w http.ResponseWriter, r *http.Request) {

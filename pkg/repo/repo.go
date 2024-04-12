@@ -5,9 +5,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/guilycst/go-htmx/internal/adapters/repositories/libsql"
-	"github.com/guilycst/go-htmx/internal/adapters/repositories/orm"
-	"github.com/guilycst/go-htmx/internal/core/ports"
+	"github.com/jstamariz/go-htmx/internal/adapters/repositories/libsql"
+	"github.com/jstamariz/go-htmx/internal/adapters/repositories/orm"
+	"github.com/jstamariz/go-htmx/internal/core/ports"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

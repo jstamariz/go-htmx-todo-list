@@ -1,4 +1,4 @@
-module github.com/guilycst/go-htmx
+module github.com/jstamariz/go-htmx
 
 go 1.19
 

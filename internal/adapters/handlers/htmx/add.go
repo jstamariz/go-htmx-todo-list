@@ -3,8 +3,8 @@ package htmx
 import (
 	"net/http"
 
-	"github.com/guilycst/go-htmx/internal/core/domain"
-	"github.com/guilycst/go-htmx/internal/core/services/todosrv"
+	"github.com/jstamariz/go-htmx/internal/core/domain"
+	"github.com/jstamariz/go-htmx/internal/core/services/todosrv"
 )
 
 func (hx *HTMXHandler) AddHandleFunc(w http.ResponseWriter, r *http.Request) {

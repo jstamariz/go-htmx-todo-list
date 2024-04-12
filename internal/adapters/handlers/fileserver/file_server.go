@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/guilycst/go-htmx/pkg/dirutil"
+	"github.com/jstamariz/go-htmx/pkg/dirutil"
 )
 
 func NewFileServerHandler(dir string) (func(w http.ResponseWriter, r *http.Request), error) {

@@ -4,8 +4,8 @@ import (
 	"embed"
 	"html/template"
 
-	"github.com/guilycst/go-htmx/internal/core/domain"
-	"github.com/guilycst/go-htmx/internal/core/ports"
+	"github.com/jstamariz/go-htmx/internal/core/domain"
+	"github.com/jstamariz/go-htmx/internal/core/ports"
 )
 
 //go:embed templates

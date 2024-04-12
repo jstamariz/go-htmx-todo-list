@@ -6,10 +6,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/guilycst/go-htmx/internal/core/domain"
-	"github.com/guilycst/go-htmx/internal/core/ports"
-	"github.com/guilycst/go-htmx/pkg/loadenv"
-	"github.com/guilycst/go-htmx/pkg/repo"
+	"github.com/jstamariz/go-htmx/internal/core/domain"
+	"github.com/jstamariz/go-htmx/internal/core/ports"
+	"github.com/jstamariz/go-htmx/pkg/loadenv"
+	"github.com/jstamariz/go-htmx/pkg/repo"
 )
 
 var population = []*domain.TodoItem{}

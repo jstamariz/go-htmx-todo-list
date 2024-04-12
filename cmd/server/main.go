@@ -6,14 +6,15 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/guilycst/go-htmx/internal/adapters/handlers/fileserver"
-	"github.com/guilycst/go-htmx/internal/adapters/handlers/htmx"
+	"github.com/jstamariz/go-htmx/cmd/middleware"
+	"github.com/jstamariz/go-htmx/internal/adapters/handlers/fileserver"
+	"github.com/jstamariz/go-htmx/internal/adapters/handlers/htmx"
 
 	_ "time/tzdata"
 
-	"github.com/guilycst/go-htmx/internal/core/services/todosrv"
-	"github.com/guilycst/go-htmx/pkg/loadenv"
-	"github.com/guilycst/go-htmx/pkg/repo"
+	"github.com/jstamariz/go-htmx/internal/core/services/todosrv"
+	"github.com/jstamariz/go-htmx/pkg/loadenv"
+	"github.com/jstamariz/go-htmx/pkg/repo"
 )
 
 func init() {
@@ -46,13 +47,13 @@ func init() {
 	}
 
 	http.HandleFunc("/", handler.IndexHandleFunc)
-	http.HandleFunc("/add", handler.AddHandleFunc)
+	http.HandleFunc("/add", middleware.XSSMiddleware(handler.AddHandleFunc))
 	http.HandleFunc("/list", handler.ListHandleFunc)
 	http.HandleFunc("/done/", handler.DoneHandleFunc(true))
 	http.HandleFunc("/undone/", handler.DoneHandleFunc(false))
 	http.HandleFunc("/delete/", handler.Delete)
-	http.HandleFunc("/edit/", handler.Edit)
-	http.HandleFunc("/update/", handler.Update)
+	http.HandleFunc("/edit/", middleware.XSSMiddleware(handler.Edit))
+	http.HandleFunc("/update/", middleware.XSSMiddleware(handler.Update))
 
 	distFsh, err := fileserver.NewFileServerHandler("./dist")
 	if err != nil {
