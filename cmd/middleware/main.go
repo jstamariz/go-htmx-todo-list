@@ -3,6 +3,8 @@ package middleware
 import (
 	"net/http"
 	"regexp"
+
+	"github.com/jstamariz/go-htmx/cmd/logger"
 )
 
 func XSSMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -19,6 +21,7 @@ func XSSMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			for _, value := range values {
 				if xssPattern.MatchString(value) {
 					http.Error(w, "Potential XSS attack detected", http.StatusForbidden)
+					logger.Log.Printf("Potential XSS attack detected at %s", r.URL)
 					return
 				}
 			}

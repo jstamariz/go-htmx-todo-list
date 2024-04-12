@@ -7,6 +7,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/jstamariz/go-htmx/cmd/logger"
 	"github.com/jstamariz/go-htmx/internal/core/domain"
 	"github.com/jstamariz/go-htmx/internal/core/ports"
 	_ "github.com/libsql/libsql-client-go/libsql"
@@ -23,6 +24,7 @@ type LibsqlTodoRepository struct {
 func (r *LibsqlTodoRepository) getSQL(fileName string) (string, error) {
 	fb, err := sqlFiles.ReadFile(fmt.Sprintf("sql/%s", fileName))
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return "", err
 	}
 
@@ -33,6 +35,7 @@ func (r *LibsqlTodoRepository) getSQL(fileName string) (string, error) {
 func (r *LibsqlTodoRepository) FindById(id any) (*domain.TodoItem, error) {
 	selc, err := r.getSQL("select.sql")
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return nil, err
 	}
 
@@ -43,6 +46,7 @@ func (r *LibsqlTodoRepository) FindById(id any) (*domain.TodoItem, error) {
 		deletedAt sql.NullString
 	)
 	if err := r.db.QueryRow(selc, id).Scan(&item.ID, &createdAt, &updatedAt, &deletedAt, &item.Title, &item.Description, &item.Done); err != nil {
+		logger.Log.Printf(err.Error())
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("id %d not found", id)
 		}
@@ -57,11 +61,13 @@ func (r *LibsqlTodoRepository) FindById(id any) (*domain.TodoItem, error) {
 func (r *LibsqlTodoRepository) All() ([]domain.TodoItem, error) {
 	selc, err := r.getSQL("select_all.sql")
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return nil, err
 	}
 
 	rows, err := r.db.Query(selc)
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return nil, err
 	}
 
@@ -74,6 +80,7 @@ func (r *LibsqlTodoRepository) All() ([]domain.TodoItem, error) {
 			deletedAt sql.NullString
 		)
 		if err := rows.Scan(&item.ID, &createdAt, &updatedAt, &deletedAt, &item.Title, &item.Description, &item.Done); err != nil {
+			logger.Log.Printf(err.Error())
 			return nil, err
 		}
 
@@ -88,6 +95,7 @@ func (r *LibsqlTodoRepository) All() ([]domain.TodoItem, error) {
 func (r *LibsqlTodoRepository) Save(data *domain.TodoItem) error {
 	save, err := r.getSQL("update.sql")
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 
@@ -107,11 +115,13 @@ func (r *LibsqlTodoRepository) Save(data *domain.TodoItem) error {
 	}
 	_, err = r.db.Exec(save, deletedAt, data.Title, data.Description, done, data.ID)
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 
 	item, err := r.FindById(data.ID)
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 	*data = *item
@@ -121,17 +131,20 @@ func (r *LibsqlTodoRepository) Save(data *domain.TodoItem) error {
 func (r *LibsqlTodoRepository) Create(data *domain.TodoItem) error {
 	save, err := r.getSQL("insert_or_replace.sql")
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 
 	rs, err := r.db.Exec(save, nil, nil, data.Title, data.Description, 0)
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 
 	id, _ := rs.LastInsertId()
 	item, err := r.FindById(id)
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 
@@ -142,6 +155,7 @@ func (r *LibsqlTodoRepository) Create(data *domain.TodoItem) error {
 func (r *LibsqlTodoRepository) Delete(data *domain.TodoItem) error {
 	save, err := r.getSQL("insert_or_replace.sql")
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 
@@ -156,11 +170,13 @@ func (r *LibsqlTodoRepository) Delete(data *domain.TodoItem) error {
 func (r *LibsqlTodoRepository) SaveBatch(data []*domain.TodoItem) error {
 	save, err := r.getSQL("insert_or_replace.sql")
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 
 	tx, err := r.db.Begin()
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return err
 	}
 
@@ -172,6 +188,7 @@ func (r *LibsqlTodoRepository) SaveBatch(data []*domain.TodoItem) error {
 
 		_, err := tx.Exec(save, nil, nil, item.Title, item.Description, done)
 		if err != nil {
+			logger.Log.Printf(err.Error())
 			log.Println(err)
 			log.Println("batch save transaction rollback")
 			return tx.Rollback()
@@ -190,11 +207,13 @@ func NewTodoDBRepository(connStr string) (ports.TodoRepository, error) {
 	db.SetConnMaxIdleTime(time.Second * 3)
 	db.SetConnMaxLifetime(time.Second * 3)
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return nil, err
 	}
 
 	err = db.Ping()
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return nil, err
 	}
 
@@ -206,11 +225,13 @@ func NewTodoDBRepository(connStr string) (ports.TodoRepository, error) {
 
 	create, err := repo.getSQL("create_table.sql")
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return nil, err
 	}
 
 	_, err = db.Exec(create)
 	if err != nil {
+		logger.Log.Printf(err.Error())
 		return nil, err
 	}
 
